@@ -1,200 +1,233 @@
-# <h1 align="center"> Harkirat Web3 Learning Repository </h1>
+# <h1 align="center"> Bridge Contract System </h1>
 
-**A comprehensive collection of Web3, blockchain, and decentralized application projects covering Ethereum, Solana, and cross-chain development**
+**A Foundry-based Ethereum smart contract system for cross-chain token bridging with ERC20 token implementations**
 
 ![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)
-![Solana](https://img.shields.io/badge/Solana-9945FF?style=for-the-badge&logo=Solana&logoColor=white)
-![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white)
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Solidity](https://img.shields.io/badge/Solidity-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Foundry](https://img.shields.io/badge/Foundry-000000?style=for-the-badge&logo=ethereum&logoColor=white)
+![OpenZeppelin](https://img.shields.io/badge/OpenZeppelin-4E5EE4?style=for-the-badge&logo=openzeppelin&logoColor=white)
 
-## 📋 Repository Overview
+## 📋 Project Overview
 
-This repository contains multiple Web3 learning projects demonstrating various blockchain concepts, smart contract development, and decentralized application (dApp) creation across different blockchain ecosystems.
+This project implements a comprehensive cross-chain bridge system using Ethereum smart contracts. It features ERC20 token implementations and a sophisticated bridge contract for locking and unlocking tokens across different blockchain networks.
 
-## 🗂️ Project Structure
+The system consists of three main smart contracts:
+- **Shiba Token (SHIB)** - A standard ERC20 token implementation
+- **Bridge Contract (LockETH)** - A cross-chain bridge for token operations
+- **Wrapped Shiba Token (WSHIB)** - A wrapped version of the original token
 
-### 🔗 Ethereum Projects
+## 🏗️ Architecture
 
-#### **hello_template** - Foundry/Ethereum Smart Contracts
-- **Description**: Collection of Ethereum smart contracts using Foundry framework
-- **Technologies**: Solidity, Foundry, OpenZeppelin
-- **Contracts**:
-  - `Contract.sol` - Shiba Inu ERC20 token implementation
-  - `LockETH.sol` - Cross-chain bridge contract for token locking/unlocking
-  - `WContract.sol` - Wrapped Shiba token contract
-- **Setup**:
-  ```bash
-  cd hello_template
-  forge install
-  forge build
-  forge test
-  ```
+### Smart Contracts
 
-#### **eth-front-bridge** - Ethereum Frontend Bridge
-- **Description**: React TypeScript frontend for Ethereum interaction using Wagmi and Viem
-- **Technologies**: React, TypeScript, Vite, Wagmi, Viem, TanStack Query
-- **Features**: Web3 wallet connection and Ethereum blockchain interaction
-- **Setup**:
-  ```bash
-  cd eth-front-bridge
-  npm install
-  npm run dev
-  ```
+#### 1. **Shiba Token (`Contract.sol`)**
+```solidity
+contract Shiba is ERC20
+```
+- **Purpose**: Standard ERC20 token implementation
+- **Name**: "Shiba Inu"
+- **Symbol**: "SHIB"
+- **Supply**: 1,000,000,000,000,000,000,000,000 tokens (minted to deployer)
+- **Features**: Standard ERC20 functionality with OpenZeppelin implementation
 
-#### **ETH-on-frontend** - Ethereum Balance Tracker
-- **Description**: React frontend for real-time Ethereum balance monitoring
-- **Technologies**: React, Viem, TanStack React Query
-- **Features**: Real-time balance fetching with 10-second intervals
-- **Setup**:
-  ```bash
-  cd ETH-on-frontend/ETH-frontend
-  npm install
-  npm run dev
-  ```
+#### 2. **Bridge Contract (`LockETH.sol`)**
+```solidity
+contract LockETH is Ownable
+```
+- **Purpose**: Cross-chain bridge for token locking/unlocking operations
+- **Key Features**:
+  - Token deposits with allowance verification
+  - Withdrawal functionality with pending amount tracking
+  - Owner-controlled signal reception from other chains
+  - Event emission for cross-chain communication
+- **Security**: Ownable pattern for administrative functions
 
-### ⚡ Solana Projects
+#### 3. **Wrapped Shiba Token (`WContract.sol`)**
+```solidity
+contract WShiba is ERC20
+```
+- **Purpose**: Wrapped version of Shiba token for cross-chain operations
+- **Name**: "WSHiba Inu"
+- **Symbol**: "WSHIB"
+- **Features**: ERC20 standard without initial minting (to be minted by bridge)
 
-#### **anchor** - Solana Calculator Program
-- **Description**: Basic Solana program using Anchor framework
-- **Technologies**: Rust, Anchor, Solana
-- **Features**: Simple calculator smart contract initialization
-- **Setup**:
-  ```bash
-  cd anchor/calculator
-  anchor build
-  anchor test
-  ```
+## 🔧 Technical Details
 
-#### **sol-week32-sol-counter-program** - Solana Counter
-- **Description**: Solana program implementing increment/decrement counter functionality
-- **Technologies**: Rust, Solana Program Library, Borsh
-- **Features**: Counter state management with increment/decrement operations
-- **Setup**:
-  ```bash
-  cd sol-week32-sol-counter-program
-  cargo build-sbf
-  ```
+### Dependencies
+- **OpenZeppelin Contracts v5.4.0**: For secure ERC20 and access control implementations
+- **Forge Standard Library**: For testing and console utilities
+- **Foundry Framework**: For development, testing, and deployment
 
-#### **solana-wallet-adapter** - Wallet Integration
-- **Description**: React frontend for Solana wallet connection
-- **Technologies**: React, Solana Wallet Adapter
-- **Features**: Wallet connection and Solana blockchain interaction
-- **Setup**:
-  ```bash
-  cd solana-wallet-adapter/solana-wallet-adap
-  npm install
-  npm run dev
-  ```
+### Key Functions
 
-#### **solana-cci** - Cross-Chain Infrastructure
-- **Description**: Solana cross-chain interaction utilities
-- **Technologies**: Rust, Solana, LiteSVM
-- **Features**: Cross-chain communication testing and development
+#### Bridge Contract Functions
+- `deposit(IERC20 token, uint256 amount)` - Lock tokens in the bridge
+- `withdraw(IERC20 token, uint256 amount)` - Withdraw unlocked tokens
+- `onsignalfromOtherChain(uint256 amount)` - Receive cross-chain signals (owner only)
 
-### 🌉 Full-Stack Projects
-
-#### **cloud-wallet** - Cloud-Based Wallet
-- **Description**: Full-stack application with cloud wallet functionality
-- **Technologies**: 
-  - Backend: Node.js, Express, Solana Web3.js, JWT
-  - Frontend: React, Vite
-- **Features**:
-  - User signup/signin with JWT authentication
-  - Automatic Solana keypair generation
-  - RESTful API for wallet operations
-- **Setup**:
-  ```bash
-  # Backend
-  cd cloud-wallet/backend
-  npm install
-  node index.js
-  
-  # Frontend
-  cd cloud-wallet/frontend
-  npm install
-  npm run dev
-  ```
-
-### 🦀 Rust Learning Projects
-
-#### **rust-3** - Rust Fundamentals
-- **Description**: Rust programming exercises and implementations
-- **Technologies**: Rust, Borsh, Serde, Chrono
-- **Features**: Generic traits, shape calculations, serialization examples
-
-#### **testing** - Rust Experimentation
-- **Description**: Rust testing and experimentation playground
-- **Technologies**: Rust
-- **Features**: Various Rust programming concepts and testing
-
-## 🛠️ Technologies Used
-
-### Blockchain Platforms
-- **Ethereum**: Smart contract development with Solidity
-- **Solana**: High-performance blockchain programs with Rust
-
-### Development Frameworks
-- **Foundry**: Ethereum development framework
-- **Anchor**: Solana development framework
-- **Vite**: Frontend build tool
-- **React**: UI framework
-
-### Libraries & Tools
-- **OpenZeppelin**: Secure smart contract libraries
-- **Wagmi**: React hooks for Ethereum
-- **Viem**: TypeScript interface for Ethereum
-- **Solana Web3.js**: Solana JavaScript SDK
-- **TanStack Query**: Data fetching and caching
+### Events
+- `Deposit(address indexed user, uint256 amount)` - Emitted when tokens are deposited
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js** (v16+)
-- **Rust** and **Cargo**
-- **Foundry** for Ethereum development
-- **Anchor CLI** for Solana development
-- **Git**
+- **Foundry** - Ethereum development framework
+- **Node.js** (v16+) - For OpenZeppelin contracts
+- **Git** - Version control
 
-### Quick Setup
-1. Clone the repository:
+### Installation
+
+1. **Clone the repository**:
    ```bash
    git clone <repository-url>
-   cd harkirat-web3
+   cd hello_template
    ```
 
-2. Choose your project of interest and follow the specific setup instructions above.
+2. **Install dependencies**:
+   ```bash
+   # Install OpenZeppelin contracts
+   npm install
+   
+   # Install Foundry dependencies
+   forge install
+   ```
 
-### Development Workflow
-Each project contains its own package.json or Cargo.toml with specific dependencies and scripts. Navigate to individual project directories for detailed setup instructions.
+3. **Build the contracts**:
+   ```bash
+   forge build
+   ```
 
-## 📚 Learning Path
+4. **Run tests**:
+   ```bash
+   forge test
+   ```
 
-1. **Start with Ethereum**: Begin with `hello_template` to understand Solidity and smart contracts
-2. **Frontend Integration**: Explore `eth-front-bridge` for Web3 frontend development  
-3. **Solana Development**: Move to `anchor` and `sol-week32-sol-counter-program` for Solana programming
-4. **Full-Stack Development**: Build complete dApps with `cloud-wallet`
-5. **Cross-Chain**: Explore bridge contracts and cross-chain functionality
+### Project Structure
+```
+hello_template/
+├── src/
+│   ├── Contract.sol      # Shiba Token (ERC20)
+│   ├── LockETH.sol       # Bridge Contract
+│   └── WContract.sol     # Wrapped Shiba Token
+├── test/
+│   ├── Contract.t.sol    # Test contracts
+│   └── remapping.txt     # Import remappings
+├── lib/
+│   └── forge-std/        # Foundry standard library
+├── foundry.toml          # Foundry configuration
+└── package.json          # Node.js dependencies
+```
+
+## � Testing
+
+The project includes a basic test setup using Foundry's testing framework:
+
+```bash
+# Run all tests
+forge test
+
+# Run tests with verbosity
+forge test -vvv
+
+# Run specific test
+forge test --match-test testBar
+```
+
+### Test Configuration
+- **Fuzz Testing**: Configured with 10,000 runs for CI environment
+- **Test Framework**: Foundry's native testing with forge-std
+
+## � Security Considerations
+
+### Access Control
+- Bridge contract uses OpenZeppelin's `Ownable` pattern
+- Only owner can receive signals from other chains
+- Proper allowance checks before token transfers
+
+### Best Practices Implemented
+- ✅ Use of established OpenZeppelin contracts
+- ✅ Proper event emission for transparency
+- ✅ Allowance verification before transfers
+- ✅ Reentrancy protection through proper state management
+
+## � Usage Examples
+
+### Deploying Contracts
+
+```solidity
+// Deploy Shiba token
+Shiba shiba = new Shiba();
+
+// Deploy bridge with token address
+LockETH bridge = new LockETH(address(shiba));
+
+// Deploy wrapped token
+WShiba wshiba = new WShiba();
+```
+
+### Bridge Operations
+
+```solidity
+// User approves bridge to spend tokens
+shiba.approve(address(bridge), amount);
+
+// User deposits tokens to bridge
+bridge.deposit(IERC20(address(shiba)), amount);
+
+// Owner signals unlock from other chain
+bridge.onsignalfromOtherChain(amount);
+
+// User withdraws unlocked tokens
+bridge.withdraw(IERC20(address(shiba)), amount);
+```
+
+## 🛠️ Development Commands
+
+```bash
+# Build contracts
+forge build
+
+# Run tests
+forge test
+
+# Deploy to local network
+forge script script/Deploy.s.sol --rpc-url <RPC_URL> --private-key <PRIVATE_KEY>
+
+# Verify contracts
+forge verify-contract <CONTRACT_ADDRESS> <CONTRACT_NAME> --chain-id <CHAIN_ID>
+
+# Generate gas report
+forge test --gas-report
+```
+
+## 🔮 Future Enhancements
+
+- [ ] Add multi-signature support for bridge operations
+- [ ] Implement fee mechanism for bridge transactions
+- [ ] Add support for multiple tokens
+- [ ] Implement automated cross-chain communication
+- [ ] Add pause/unpause functionality
+- [ ] Implement withdrawal limits and rate limiting
 
 ## 🤝 Contributing
 
-This repository is for educational purposes. Feel free to:
-- Add new learning projects
-- Improve existing implementations
-- Add documentation and examples
-- Share learning resources
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-Various licenses apply to different projects. See individual project directories for specific license information.
+This project is licensed under the Unlicense - see the [LICENSE](LICENSE) file for details.
 
-## 🔗 Useful Resources
+## 🔗 Resources
 
-- [Ethereum Documentation](https://ethereum.org/developers)
-- [Solana Documentation](https://docs.solana.com)
-- [Foundry Book](https://book.getfoundry.sh)
-- [Anchor Book](https://book.anchor-lang.com)
-- [Rust Book](https://doc.rust-lang.org/book)
+- [Foundry Documentation](https://book.getfoundry.sh/)
+- [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts/)
+- [Solidity Documentation](https://docs.soliditylang.org/)
+- [Ethereum Development](https://ethereum.org/developers/)
 
 ---
 
-*This repository represents a comprehensive journey through Web3 development, covering smart contracts, dApps, and blockchain programming across multiple ecosystems.*
+*This bridge contract system demonstrates modern Ethereum smart contract development practices with a focus on security, interoperability, and clean architecture.*
